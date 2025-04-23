@@ -1,0 +1,24 @@
+# Streamlit UI + 數值處理
+streamlit==1.31.0
+numpy==1.26.4
+
+# 音訊處理
+ffmpeg-python==0.2.0
+soundfile==0.13.1
+
+# Whisper 語音轉錄
+openai-whisper==20230918
+
+# Paddle 模組（語音辨識 / 合成）
+paddlepaddle-gpu==2.6.2.post120
+paddlespeech==1.4.1
+paddleaudio==1.1.0
+onnxruntime==1.15.1
+protobuf==3.20.0
+
+# LangChain 摘要處理
+docxtpl==0.16.7
+langchain==0.1.0
+langchain-community==0.0.21
+langchain-core==0.1.33
+langchain-openai==0.0.5

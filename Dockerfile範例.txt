@@ -1,0 +1,23 @@
+# 使用 Python 3.9 瘦版映像檔
+FROM python:3.9-slim
+
+# 安裝系統相依套件（FFmpeg）
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+# 設定工作目錄
+WORKDIR /app
+
+# 複製需求檔並安裝
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 複製所有專案檔案
+COPY . .
+
+# 對外開放埠口
+EXPOSE 8501
+
+# 啟動 Streamlit 應用
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
