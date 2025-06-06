@@ -3,7 +3,6 @@ import os
 import subprocess
 import tempfile
 import streamlit as st
-from config import Config  # ✅ 匯入配置參數（包含 Whisper 模型類型）
 
 
 class AudioTranscriber:
@@ -18,8 +17,8 @@ class AudioTranscriber:
     def __init__(self):
         """初始化 Whisper 模型（僅載入一次）"""
         if AudioTranscriber._whisper_model is None:
-            # ✅ 從設定檔讀取模型名稱（如 tiny、base、small、medium）
-            AudioTranscriber._whisper_model = whisper.load_model(Config.AUDIO_MODEL_TYPE)
+            # 載入 Whisper base 模型（支援中文）
+            AudioTranscriber._whisper_model = whisper.load_model("base")
 
     def transcribe(self, uploaded_audio):
         """
@@ -53,9 +52,9 @@ class AudioTranscriber:
             # 使用 Whisper 進行語音轉文字（支援中文）
             transcript_result = self._whisper_model.transcribe(
                 wav_audio_path,
-                language="zh",              # 🔸 強制設定為中文語系
-                word_timestamps=True,       # 🔸 回傳每個詞的時間戳
-                temperature=0.2             # 🔸 控制生成隨機性（越低越穩定）
+                language="zh",
+                word_timestamps=True,  # 回傳每個詞的時間戳
+                temperature=0.2         # 模型隨機性（0 為最穩定）
             )
 
             # 將 Whisper 結果轉為 VTT 字幕格式

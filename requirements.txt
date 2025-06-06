@@ -1,24 +1,25 @@
-# Streamlit UI + 數值處理
-streamlit==1.31.0
-numpy==1.26.4
-
-# 音訊處理
+# Whisper 語音轉文字（使用 GitHub 安裝，不要寫在這裡）
+# ffmpeg 與相依套件
 ffmpeg-python==0.2.0
-soundfile==0.13.1
+numpy==1.26.4
+scipy==1.11.4
+tqdm==4.66.2
 
-# Whisper 語音轉錄
-openai-whisper==20230918
+# PyTorch for CUDA 12.1 (你已成功安裝)
+# torch==2.5.1+cu121
+# torchaudio==2.5.1+cu121
+# torchvision==0.20.1+cu121
+# 使用 pip install --index-url https://download.pytorch.org/whl/cu121 安裝
 
-# Paddle 模組（語音辨識 / 合成）
-paddlepaddle-gpu==2.6.2.post120
-paddlespeech==1.4.1
-paddleaudio==1.1.0
-onnxruntime==1.15.1
-protobuf==3.20.0
+# Streamlit Web UI
+streamlit==1.31.0
+requests==2.31.0
 
-# LangChain 摘要處理
+# LangChain 套件（版本需相容）
+langchain==0.1.17
+langchain-openai==0.1.6
+langchain-community==0.0.36
+
+# Word 摘要處理
 docxtpl==0.16.7
-langchain==0.1.0
-langchain-community==0.0.21
-langchain-core==0.1.33
-langchain-openai==0.0.5
+python-docx==1.1.0

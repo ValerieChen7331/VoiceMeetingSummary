@@ -26,7 +26,7 @@ class StreamlitLoginApp:
 
     def _initialize_session_state(self):
         """初始化 session_state"""
-        st.session_state.setdefault("authenticated", True)
+        st.session_state.setdefault("authenticated", False)
         st.session_state.setdefault("user_id", Config.DEFAULT_USER_ID)
 
     def login_api_request(self, user_id, password):

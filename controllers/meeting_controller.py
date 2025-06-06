@@ -17,21 +17,6 @@ class MeetingSummaryApp:
     def run(self):
         """啟動應用程式"""
         # 設定背景圖片
-        # # 設定背景圖片
-        # page_bg_img = '''
-        # <style>
-        # .stApp {
-        #     background-color: #ebf2f3;
-        #     background-image: url("data:image/svg+xml,%3Csvg width='44' height='12' viewBox='0 0 44 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 12v-2L0 0v10l4 2h16zm18 0l4-2V0L22 10v2h16zM20 0v8L4 0h16zm18 0L22 8V0h16z' fill='%23c1d0dc' fill-opacity='0.45' fill-rule='evenodd'/%3E%3C/svg%3E");
-        #     background-size: cover;
-        #     background-position: center;
-        # }
-        # </style>
-        # '''
-        #
-        # # 注入 CSS
-        # st.markdown(page_bg_img, unsafe_allow_html=True)
-
         self.set_background(self.load_base64_image(Config.BACKGROUND_IMAGE_PATH))
         # 顯示標題
         self.show_app_header()
@@ -74,27 +59,6 @@ class MeetingSummaryApp:
                     }}
                 </style>
             """, unsafe_allow_html=True)
-
-    def show_app_header_1(self):
-        """顯示標題與登出按鈕"""
-        st.markdown('<div style="position:fixed; top:20px; right:20px;">', unsafe_allow_html=True)
-
-        # if st.button("LogOut"):
-        #     st.session_state.clear()
-
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.title("🔗 會議記錄助理 - Meeting Summary Assistant 🔗")
-
-    # def show_app_header(self):
-    #     """顯示標題與右上角 LOGO"""
-    #     # 右上角顯示 LOGO
-    #     col1, col2 = st.columns([6, 1])
-    #     with col2:
-    #         st.image("assets/summary_icon.png", width=150)  # 載入圖片
-    #
-    #     st.title("🔗 會議記錄助理 - Meeting Summary Assistant 🔗")
-
-
 
     @staticmethod
     def load_image(self, image_path):
@@ -141,67 +105,36 @@ class MeetingSummaryApp:
 
     def show_sidebar(self):
         """顯示側邊欄選擇功能"""
-        # st.sidebar.image("assets/summary_icon.png", width=300)  # 側邊欄 LOGO
         st.sidebar.title("操作選擇")
+
         # 顯示選項按鈕
         options_display = [opt[0] for opt in self.OPTIONS.values()]
         action = st.sidebar.radio("請選擇操作模式：", options_display)
         selected_key = next(key for key, value in self.OPTIONS.items() if value[0] == action)
         file_types = self.OPTIONS[selected_key][1]
+
         # 上傳檔案欄位
         uploaded_file = st.sidebar.file_uploader("請上傳檔案：", type=file_types)
-        # 自訂摘要提示語
-        prompt = st.sidebar.text_area("自訂摘要提示語：", "根據以下對話內容生成摘要，並加上標題：{context}")
-        # 執行按鈕
+
+        # 預設提示語（首次進入時）
+        default_prompt = (
+            "請將逐字稿內容整理成會議記錄，條列重點並說明。\n"
+            "請使用繁體中文。"
+        )
+        if "summary_prompt" not in st.session_state:
+            st.session_state["summary_prompt"] = default_prompt
+
+        # 顯示可編輯的提示語欄位（使用 session_state 中的值）
+        prompt = st.sidebar.text_area("自訂摘要提示語：", value=st.session_state["summary_prompt"])
+
+        # 按鈕
         submitted = st.sidebar.button("開始執行")
+
+        # ✅ 按下按鈕時，更新預設提示語
+        if submitted:
+            st.session_state["summary_prompt"] = prompt
+
         return selected_key, uploaded_file, prompt, submitted
-
-    # 音檔轉逐字稿處理
-    def _handle_transcription_1(self, uploaded_file):
-        """處理音檔轉逐字稿"""
-        if uploaded_file is None:
-            st.warning("⚠️ 請上傳音檔")
-            return ""
-
-        with st.spinner("音訊轉錄中..."):  # 顯示等待提示
-            audio_transcriber = AudioTranscriber()
-            transcription = audio_transcriber.transcribe(uploaded_file)
-
-        if transcription:
-            st.subheader("📝 逐字稿結果")
-            # st.write(transcription)  # 顯示逐字稿內容
-            # 🔹 使用 CSS 設定固定高度 + 捲動條
-            st.markdown(
-                f"""
-                       <style>
-                           .transcription-box {{
-                               width: 50%;
-                               height: 300px;  /* 設定固定高度 */
-                               overflow-y: scroll;  /* 啟用垂直滾動 */
-                               padding: 10px;
-                               border: 2px solid #ccc;
-                               border-radius: 10px;
-                               background-color: #f9f9f9;
-                               font-family: Arial, sans-serif;
-                               white-space: pre-wrap;
-                           }}
-                       </style>
-                       <div class="transcription-box">{transcription}</div>
-                       """,
-                unsafe_allow_html=True
-            )
-
-            # 允許下載逐字稿檔案
-            st.download_button(
-                "📥 下載逐字稿 (.txt)",
-                transcription,
-                f"{uploaded_file.name}_transcription.txt",
-                mime="text/plain"
-            )
-            return transcription  # **確保回傳非 None 的內容**
-        else:
-            st.error("⚠️ 音檔轉錄失敗")
-            return ""
 
     def _handle_transcription(self, uploaded_file):
         """處理音檔轉逐字稿"""
@@ -222,7 +155,7 @@ class MeetingSummaryApp:
             st.download_button(
                 "📥 下載逐字稿 (.vtt)",
                 transcription,
-                f"{uploaded_file.name}_transcription.txt",
+                f"{uploaded_file.name}_transcription.vtt",
                 mime="text/plain"
             )
             return transcription  # **確保回傳非 None 的內容**

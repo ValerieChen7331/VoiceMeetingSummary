@@ -1,0 +1,16 @@
+docxtpl==0.19.1
+langchain==0.3.22
+streamlit==1.39.0
+unstructured==0.17.2
+unstructured[pdf]==0.17.2
+# openai
+chromadb==0.5.23
+# tiktoken
+sentence-transformers==3.4.1
+langchain-community==0.3.20
+langchain-openai==0.3.11
+# Whisper
+openai-whisper==20240930
+# paddlepaddle
+paddlespeech==1.4.0
+
